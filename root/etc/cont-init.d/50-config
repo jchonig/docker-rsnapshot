@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+
+print_vars () {
+    if [ -n "${1}" ]; then
+	title=" ${1}"
+    else
+	title=""
+    fi
+    echo "Environment${title}:"
+    echo "    PUID=${PUID}"
+    echo "    PGID=${PGID}"
+    echo "    TZ=${TZ}"
+}
+
+print_vars 
+
+# load env file if it exists
+if [ -f "/config/env" ]; then
+  source /config/env
+  print_vars "After sourcing /config/env"
+fi
+
+# make our config dirs
+for path in /etc/cron.d log /root/.ssh; do
+    root=$(dirname ${path})
+    dir=$(basename ${path})
+    test -d /config/${dir} || mkdir -p /config/${dir}
+    test "${root}" = "." -o -L ${path} || rm -rf ${path} && ln -s /config/${dir} ${path}
+done
