@@ -1,4 +1,4 @@
-/config/log/rsnapshot.log {
+/config/log/*.log {
 	rotate 6
 	monthly
 	compress
