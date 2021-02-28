@@ -1,4 +1,4 @@
-# docker-monit
+# docker-rsnapshot
 A container running [rsnapshot](https://rsnapshot.org/) for the
 purpose backing up remote filesystems via ssh
 
@@ -8,7 +8,7 @@ purpose backing up remote filesystems via ssh
 
 ```
 docker create \
-  --name=monit \
+  --name=rsnapshot \
   -e PUID=1000 \
   -e PGID=1000 \
   -e TZ=Europe/London \
@@ -26,7 +26,7 @@ Compatible with docker-compose v2 schemas.
 ---
 version: "2"
 services:
-  monit:
+  rsnapshot:
     image: jchonig/rsnapshot
     container_name: rsnapshot
     environment:
