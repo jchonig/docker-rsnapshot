@@ -12,7 +12,7 @@ print_vars () {
     echo "    TZ=${TZ}"
 }
 
-print_vars 
+print_vars init-paths
 
 # load env file if it exists
 if [ -f "/config/env" ]; then
