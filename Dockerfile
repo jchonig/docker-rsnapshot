@@ -1,4 +1,4 @@
-FROM lsiobase/ubuntu:jammy
+From lsiobase/alpine:3.16
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -9,17 +9,12 @@ ENV \
 
 # Set up
 RUN \
-	echo "**** install packages ****" && \
-	apt-get update && \
-	apt-get install -y --no-install-recommends \
-		cron \
-		logrotate \
-		openssh-client \
-		rsnapshot && \
-	echo "**** clean up ****" && \
-	apt-get clean && \
-	apt-get autoremove && \
-	rm -rf /var/lib/apt/lists/*
+    echo "*** Install required packages ****" && \
+    apk add --no-cache \
+        inotify-tools \
+        logrotate \
+        openssh-client \
+        rsnapshot
 
 # Add configuration files
 COPY root /

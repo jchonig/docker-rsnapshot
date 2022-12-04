@@ -3,5 +3,6 @@
 Dockerfile*
 Makefile
 README.md
+backup
 config
 

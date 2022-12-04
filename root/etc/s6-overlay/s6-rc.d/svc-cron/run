@@ -1,4 +1,4 @@
 #!/usr/bin/with-contenv bash
 
 # Run cron
-exec /usr/sbin/cron -f -L 7
+exec /usr/sbin/crond -f -S -l 7 -c /etc/crontabs

@@ -21,9 +21,22 @@ if [ -f "/config/env" ]; then
 fi
 
 # make our config dirs
-for path in /etc/cron.d log /root/.ssh; do
+for path in log /root/.ssh; do
     root=$(dirname ${path})
     dir=$(basename ${path})
     test -d /config/${dir} || mkdir -p /config/${dir}
     test "${root}" = "." -o -L ${path} || rm -rf ${path} && ln -s /config/${dir} ${path}
 done
+
+# Save root cron config
+cp -p /etc/crontabs/root /etc/crontab.root
+
+# Init cron dir
+if [ -d /config/cron.d ]; then
+    # Add user's crontabs to root
+    sed -re 's/\s+root(\s+rsnapshot\s+)/\1/' /etc/crontab.root $(find /config/cron.d -type f) > /etc/crontabs/root
+else
+    mkdir /config/cron.d
+fi
+
+

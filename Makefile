@@ -2,6 +2,7 @@ TAG=devel
 IMAGE=rsnapshot
 VOLUMES= \
     -v ${PWD}/config:/config
+    -v ${PWD}/backup:/backup
 ENV=
 PORTS=
 

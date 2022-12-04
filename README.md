@@ -51,10 +51,11 @@ services:
 
 ## Volume Mappings (-v)
 
-| Volume  | Function                         |
-| ------  | --------                         |
-| /config | All the config files reside here |
-| /backup | Root of backup dirs |
+| Volume  | Function                          |
+|---------|-----------------------------------|
+| /config | All the config files reside here  |
+| /backup | Root of backup dirs               |
+| /data/* | Local filesystems to be backed up |
 
 # Application Setup
 
@@ -62,12 +63,31 @@ services:
     the `config` directory. This file is sourced by the shell.
   * Configure rsnapshot as follows
     * Store config file(s) in config/rsnapshot/NAME.conf
-	* Set the logfile to config/log/rsnapshot.log
+      * Set the logfile to config/log/rsnapshot.log
+	  * Set the backup path to /backup/${NAME}
+	  * If backing up local F?S, mount them under /data/*
+	* Add a crontab configuration in /config/cron.d/rsnapshot-${NAME}
+	  * Note that the root user should not be specified in the
+        crontab, it will be removed if present
   * Add ssh keys and configuration to config/.ssh dir
+  
+## Crontab example
 
-## TODO
+```
+57 17 * * * rsnapshot -c /config/rsnapshot/HOSTNAME.conf hourly
+36 1 * * 0-5 rsnapshot -c /config/rsnapshot/HOSTNAME.conf daily
+36 1 * * 6 rsnapshot -c /config/rsnapshot/HOSTNAME.conf weekly && rsnapshot -c /config/rsnapshot/HOSTNAME.conf daily
+36 0 1 * * rsnapshot -c /config/rsnapshot/HOSTNAME.conf monthly
+```
 
-  * [ ] Document configuration
+## ssh config example
 
+```
+Host *
+    PasswordAuthentication no
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
 
-
+Host HOSTNAME
+  IdentityFile ~/.ssh/KEYNAME
+```
