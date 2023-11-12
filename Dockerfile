@@ -1,6 +1,4 @@
-From lsiobase/alpine:3.16
-
-ARG DEBIAN_FRONTEND=noninteractive
+From lsiobase/alpine:3.18
 
 ENV \
 	TZ=UTC \
