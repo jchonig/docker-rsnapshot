@@ -1,8 +1,8 @@
 TAG=devel
 IMAGE=rsnapshot
 VOLUMES= \
-    -v ${PWD}/config:/config
-    -v ${PWD}/backup:/backup
+    --mount type=bind,source="${PWD}"/config,target=/config \
+    --mount type=bind,source="${PWD}"/backup,target=/backup
 ENV=
 PORTS=
 
