@@ -39,4 +39,4 @@ else
     mkdir /config/cron.d
 fi
 
-
+echo "init-paths done"

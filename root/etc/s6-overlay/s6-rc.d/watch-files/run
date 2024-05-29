@@ -1,5 +1,7 @@
 #!/usr/bin/with-contenv bash
 
+echo "watch-files started"
+
 # Watch for changes to cron files and update /etc/crontab/root
 
 inotifywait -m -r /config/cron.d -e attrib,modify,move,create,delete | \
@@ -13,3 +15,5 @@ inotifywait -m -r /config/cron.d -e attrib,modify,move,create,delete | \
 		;;
 	esac
     done
+
+echo "watch-files done"
