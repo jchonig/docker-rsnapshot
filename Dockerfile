@@ -3,7 +3,8 @@ From lsiobase/alpine:3.22
 ENV \
 	TZ=UTC \
 	PUID= \
-        PGID=
+        PGID= \
+        DOCKER_MODS=linuxserver/mods:universal-cron
 
 # Set up
 RUN \

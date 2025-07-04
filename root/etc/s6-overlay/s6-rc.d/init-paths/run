@@ -28,15 +28,4 @@ for path in log /root/.ssh; do
     test "${root}" = "." -o -L ${path} || rm -rf ${path} && ln -s /config/${dir} ${path}
 done
 
-# Save root cron config
-cp -p /etc/crontabs/root /etc/crontab.root
-
-# Init cron dir
-if [ -d /config/cron.d ]; then
-    # Add user's crontabs to root
-    sed -re 's/\s+root(\s+rsnapshot\s+)/\1/' /etc/crontab.root $(find /config/cron.d -type f) > /etc/crontabs/root
-else
-    mkdir /config/cron.d
-fi
-
 echo "init-paths done"
