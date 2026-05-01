@@ -2,7 +2,7 @@
 A container running [rsnapshot](https://rsnapshot.org/) for the
 purpose backing up remote filesystems via ssh
 
-Image hosted at: `ghcr.io/ghcr.io/jchonig/rsnapshot`
+Image hosted at: `ghcr.io/jchonig/rsnapshot`
 
 # Usage
 
