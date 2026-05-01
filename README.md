@@ -2,6 +2,8 @@
 A container running [rsnapshot](https://rsnapshot.org/) for the
 purpose backing up remote filesystems via ssh
 
+Image hosted at: `ghcr.io/ghcr.io/jchonig/rsnapshot`
+
 # Usage
 
 ## docker
@@ -15,7 +17,7 @@ docker create \
   -v </path/to/appdata/config>:/config \
   -v </path/to/backup_root>:/backup \
   --restart unless-stopped \
-  jchonig/rsnapshot
+  ghcr.io/jchonig/rsnapshot
 ```
 
 ### docker-compose
@@ -27,7 +29,7 @@ Compatible with docker-compose v2 schemas.
 version: "2"
 services:
   rsnapshot:
-    image: jchonig/rsnapshot
+    image: ghcr.io/jchonig/rsnapshot
     container_name: rsnapshot
     environment:
       - PUID=1000
