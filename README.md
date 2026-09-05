@@ -68,6 +68,10 @@ services:
       * Set the logfile to config/log/rsnapshot.log
 	  * Set the backup path to /backup/${NAME}
 	  * If backing up local F?S, mount them under /data/*
+	  * Logs under `/config/log` are rotated automatically by the
+        `svc-logrotate` service (daily check, per
+        `/etc/logrotate.d/rsnapshot`); state is kept in
+        `/config/log/.logrotate.status`.
 	* Add the schedule to the root crontab in `/config/crontabs/root`
 	  * Cron is provided by the `linuxserver/mods:universal-cron`
         Docker mod, which reads `/config/crontabs/root` (run as root)

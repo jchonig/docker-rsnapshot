@@ -1,0 +1,24 @@
+#!/usr/bin/with-contenv bash
+
+# Rotate the logs in /config/log.
+#
+# logrotate ships /etc/periodic/daily/logrotate, but that is only run by
+# `run-parts /etc/periodic/daily`, which in turn only runs if the
+# universal-cron mod installed its default /config/crontabs/root.  When
+# that file is supplied externally (e.g. by Puppet) it contains only the
+# rsnapshot jobs, so nothing ever triggers logrotate and the logs grow
+# without bound.
+#
+# Run logrotate ourselves once a day, with a state file kept on the
+# /config volume so rotation history survives container recreation.
+
+CONF=/etc/logrotate.conf
+STATE=/config/log/.logrotate.status
+
+mkdir -p /config/log
+
+while true; do
+    echo "[svc-logrotate] running logrotate"
+    logrotate --state "${STATE}" "${CONF}"
+    sleep 86400
+done
