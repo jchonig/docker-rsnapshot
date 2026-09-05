@@ -1,0 +1,44 @@
+#!/usr/bin/with-contenv bash
+
+# Keep the running container's crontabs in sync with /config/crontabs.
+#
+# The universal-cron Docker mod (and the base image) only import
+# /config/crontabs/* into crond once, at container startup.  When those
+# files are rewritten later - e.g. by Puppet regenerating
+# /config/crontabs/root - nothing re-imports them, so scheduling changes
+# are silently ignored until the container is restarted.
+#
+# This service watches the directory and re-imports on every change,
+# then nudges crond so the new schedule takes effect immediately.
+
+CRONTAB_DIR=/config/crontabs
+
+mkdir -p "${CRONTAB_DIR}"
+
+# busybox crontab installs into /var/spool/cron/crontabs (a symlink to
+# /etc/crontabs on this image); resolve it once for the cron.update poke.
+SPOOL_DIR=$(realpath /var/spool/cron/crontabs 2>/dev/null || echo /etc/crontabs)
+
+import_crontabs () {
+    local cron_user
+    for cron_user in abc root; do
+	[[ -f "${CRONTAB_DIR}/${cron_user}" ]] || continue
+	crontab -u "${cron_user}" "${CRONTAB_DIR}/${cron_user}"
+	echo "[svc-crontab-watch] imported crontab for ${cron_user}"
+	# Ask crond to reload now instead of waiting up to a minute
+	[[ -d "${SPOOL_DIR}" ]] && echo "${cron_user}" >> "${SPOOL_DIR}/cron.update"
+    done
+}
+
+echo "[svc-crontab-watch] watching ${CRONTAB_DIR} for changes"
+
+# Re-import once now, in case the files changed while the container was down.
+import_crontabs
+
+# Puppet's concat writes a temp file and renames it into place, so watch
+# for move/create events in addition to in-place modifications.
+inotifywait -m -q -e attrib -e modify -e move -e create -e delete "${CRONTAB_DIR}" | \
+    while read -r _dir _events _file; do
+	echo "[svc-crontab-watch] change detected (${_events} ${_file})"
+	import_crontabs
+    done

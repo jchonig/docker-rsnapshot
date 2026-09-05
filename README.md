@@ -68,12 +68,22 @@ services:
       * Set the logfile to config/log/rsnapshot.log
 	  * Set the backup path to /backup/${NAME}
 	  * If backing up local F?S, mount them under /data/*
-	* Add a crontab configuration in /config/cron.d/rsnapshot-${NAME}
-	  * Note that the root user should not be specified in the
-        crontab, it will be removed if present
+	* Add the schedule to the root crontab in `/config/crontabs/root`
+	  * Cron is provided by the `linuxserver/mods:universal-cron`
+        Docker mod, which reads `/config/crontabs/root` (run as root)
+        and `/config/crontabs/abc` (run as the PUID/PGID user).
+	  * These are plain user crontabs - do **not** include a user
+        field in the entries.
+	  * The mod only imports the crontabs when the container starts.
+        This image adds a `svc-crontab-watch` service that watches
+        `/config/crontabs` and re-imports on change, so edits to
+        `/config/crontabs/root` take effect on a running container
+        without a restart.
   * Add ssh keys and configuration to config/.ssh dir
-  
+
 ## Crontab example
+
+`/config/crontabs/root`:
 
 ```
 57 17 * * * rsnapshot -c /config/rsnapshot/HOSTNAME.conf hourly
